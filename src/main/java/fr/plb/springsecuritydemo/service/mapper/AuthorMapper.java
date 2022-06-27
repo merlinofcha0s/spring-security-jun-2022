@@ -1,6 +1,6 @@
 package fr.plb.springsecuritydemo.service.mapper;
 
-import fr.plb.springfluxdemo.service.dto.AuthorDTO;
+import fr.plb.springsecuritydemo.service.dto.AuthorDTO;
 import fr.plb.springsecuritydemo.domain.Author;
 import org.mapstruct.Mapper;
 
