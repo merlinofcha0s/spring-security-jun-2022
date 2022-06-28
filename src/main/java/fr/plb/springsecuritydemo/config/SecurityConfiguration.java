@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
-@Order(1)
+@Order(2)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private UserDetailsServiceMongo userDetailsServiceMongo;
@@ -27,10 +27,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .headers()
-                .contentSecurityPolicy("script-src 'self' https://toto.com")
-                .and()
-                .and()
                 .authorizeRequests()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/*").authenticated()

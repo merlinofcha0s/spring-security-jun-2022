@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.www.DigestAuthenticationF
 import java.security.DigestInputStream;
 
 @Configuration
-@Order(2)
+@Order(1)
 public class AdminSecurityConfirguration extends WebSecurityConfigurerAdapter {
 
 
