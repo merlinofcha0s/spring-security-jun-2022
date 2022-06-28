@@ -35,12 +35,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/*").authenticated()
+                .and().formLogin()
                 .and().rememberMe()
                 .tokenRepository(persistentLoginsTokenService)
                 .and()
                 .httpBasic()
                 .and().logout().logoutUrl("/logout-perso")
-                .logoutSuccessUrl("/login");
+                .logoutSuccessUrl("/login")
+                .and().oauth2Login();
     }
 
     @Override
