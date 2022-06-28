@@ -1,5 +1,7 @@
 package fr.plb.springsecuritydemo.config;
 
+import fr.plb.springsecuritydemo.domain.PersistentLoginToken;
+import fr.plb.springsecuritydemo.service.PersistentLoginsTokenService;
 import fr.plb.springsecuritydemo.service.security.UserDetailsServiceMongo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +20,13 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Order(2)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private UserDetailsServiceMongo userDetailsServiceMongo;
+    private final UserDetailsServiceMongo userDetailsServiceMongo;
+    private final PersistentLoginsTokenService persistentLoginsTokenService;
 
-    public SecurityConfiguration(UserDetailsServiceMongo userDetailsServiceMongo) {
+    public SecurityConfiguration(UserDetailsServiceMongo userDetailsServiceMongo,
+                                 PersistentLoginsTokenService persistentLoginsTokenService) {
         this.userDetailsServiceMongo = userDetailsServiceMongo;
+        this.persistentLoginsTokenService = persistentLoginsTokenService;
     }
 
     @Override
@@ -30,10 +35,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/*").authenticated()
+                .and().rememberMe()
+                .tokenRepository(persistentLoginsTokenService)
                 .and()
                 .httpBasic()
-                .and()
-                .logout();
+                .and().logout().logoutUrl("/logout-perso")
+                .logoutSuccessUrl("/login");
     }
 
     @Override
