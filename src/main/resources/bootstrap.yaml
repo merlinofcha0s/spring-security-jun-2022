@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: springsecuritydemo
+  cloud:
+    vault:
+      host: localhost
+      port: 8200
+      scheme: http
+      authentication: token
+      token: hvs.T07LN4AqhxYE71cWLbmpaAQF
+      application-name: springsecuritydemo
