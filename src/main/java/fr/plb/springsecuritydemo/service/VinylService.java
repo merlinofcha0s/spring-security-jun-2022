@@ -3,12 +3,15 @@ package fr.plb.springsecuritydemo.service;
 
 import fr.plb.springsecuritydemo.domain.Vinyl;
 import fr.plb.springsecuritydemo.repository.VinylRepository;
+import fr.plb.springsecuritydemo.service.dto.UserDTO;
 import fr.plb.springsecuritydemo.service.dto.VinylDTO;
 import fr.plb.springsecuritydemo.service.mapper.VinylMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,10 +23,12 @@ public class VinylService {
 
     private final VinylRepository vinylRepository;
     private final VinylMapper vinylMapper;
+    private UserService userService;
 
-    public VinylService(VinylRepository vinylRepository, VinylMapper vinylMapper) {
+    public VinylService(VinylRepository vinylRepository, VinylMapper vinylMapper, UserService userService) {
         this.vinylRepository = vinylRepository;
         this.vinylMapper = vinylMapper;
+        this.userService = userService;
     }
 
     public VinylDTO save(VinylDTO vinylDTO) {
@@ -49,5 +54,13 @@ public class VinylService {
     public void delete(String id) {
         log.debug("Request to delete Vinyl : {}", id);
         vinylRepository.deleteById(id);
+    }
+
+    public List<VinylDTO> getVinylByUser(String username) {
+        Optional<UserDTO> connectedUser = userService.getUserByUsername(username);
+        return connectedUser.map(userDTO -> vinylRepository.findAll()
+                .stream()
+                .map(vinylMapper::toDto)
+                .collect(Collectors.toList())).orElseGet(ArrayList::new);
     }
 }

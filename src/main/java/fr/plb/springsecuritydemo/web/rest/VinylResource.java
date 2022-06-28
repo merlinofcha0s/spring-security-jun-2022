@@ -7,6 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreFilter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,8 +39,12 @@ public class VinylResource {
     }
 
     @PostMapping("/vinyls")
-    public ResponseEntity<VinylDTO> createVinyl(@Valid @RequestBody VinylDTO vinylDTO) throws URISyntaxException {
+    public ResponseEntity<VinylDTO> createVinyl(@Valid @RequestBody VinylDTO vinylDTO,
+                                                @AuthenticationPrincipal DefaultOidcUser userDetail) throws URISyntaxException {
         VinylDTO save = vinylService.save(vinylDTO);
+
+        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         return ResponseEntity.created(new URI("/api/vinyls/" + save.getId())).body(save);
     }
 
@@ -64,5 +75,11 @@ public class VinylResource {
         log.debug("REST request to delete Vinyl : {}", id);
         vinylService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/vinyls/{username}/get")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<VinylDTO>> getVinylByUserForAdmin(@PathVariable String username) {
+        return ResponseEntity.ok(vinylService.getVinylByUser(username));
     }
 }

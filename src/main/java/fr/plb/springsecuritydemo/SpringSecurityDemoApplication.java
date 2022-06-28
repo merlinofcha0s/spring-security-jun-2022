@@ -57,18 +57,18 @@ public class SpringSecurityDemoApplication {
             user.setLogin("toto");
             user.setEmail("toto@toto.com");
             user.setPassword(passwordEncoder.encode("password"));
-            user.setAuthorities(Set.of(new Authority("ROLE_USER")));
+            user.setAuthorities(Set.of(new Authority("USER")));
 
             User admin = new User();
             admin.setLogin("totoadmin");
             admin.setEmail("totoadmin@toto.com");
             admin.setPassword(passwordEncoder.encode("god"));
-            admin.setAuthorities(Set.of(new Authority("ROLE_ADMIN")));
+            admin.setAuthorities(Set.of(new Authority("ADMIN")));
 
             Authority adminAuthority = new Authority();
-            adminAuthority.setName("ROLE_ADMIN");
+            adminAuthority.setName("ADMIN");
             Authority userAuthority = new Authority();
-            userAuthority.setName("ROLE_USER");
+            userAuthority.setName("USER");
 
             authorityRepository.save(adminAuthority);
             authorityRepository.save(userAuthority);
